@@ -1,0 +1,19 @@
+Slug
+====
+
+Slugs columns, adds a slug finder and sets to_param for slug models. Requires a 'slug' field in the database, where the slug itself is stored.
+
+
+Example
+=======
+
+ class Post < ActiveRecord::Base
+   has_slug # defaults to title
+ end
+
+ class Document < ActiveRecord::Base
+   has_slug :filename
+ end
+
+
+Copyright (c) 2008 August Lilleaas, released under the MIT license
