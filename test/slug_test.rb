@@ -40,7 +40,7 @@ class SlugTest < Test::Unit::TestCase
   end
   
   def test_to_param
-    assert_equal @post.to_param, @post[Post.slug_column]
+    assert_equal @post.to_param, "#{@post.id}-#{@post[Post.slug_column]}"
   end
   
   def test_sluggify
