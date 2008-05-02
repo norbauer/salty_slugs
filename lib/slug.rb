@@ -10,15 +10,15 @@ module Slug
     slug_column = options[:slug_column] || 'slug'
     source_column = options[:source_column] || 'title'
     raise_exceptions = options[:raise_exceptions] == false ? false : true
-    append_id = options[:append_id] == false ? false : true
+    prepend_id = options[:prepend_id] == false ? false : true
     
     write_inheritable_attribute :slug_column, slug_column  
     write_inheritable_attribute :slugged_find_should_raise_exceptions, raise_exceptions
-    write_inheritable_attribute :append_id, append_id  
+    write_inheritable_attribute :slug_should_prepend_id, prepend_id  
 
     class_inheritable_reader :slug_column
     class_inheritable_reader :slugged_find_should_raise_exceptions
-    class_inheritable_reader :append_id
+    class_inheritable_reader :slug_prepend_id
     
     before_validation { |record| record[slug_column] = record[slug_column].blank? ? sluggify(record[source_column]) : sluggify(record[slug_column]) }
     validates_uniqueness_of slug_column
@@ -52,7 +52,7 @@ module Slug
   module InstanceMethods
     
     def to_param
-      append_id ? "#{self[:id]}-#{self[slug_column]}" : self[slug_column]
+      slug_prepend_id ? "#{self.id}-#{self[slug_column]}" : self[slug_column]
     end
     
   end
