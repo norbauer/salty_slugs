@@ -1,2 +1,2 @@
 require "iconv"
-ActiveRecord::Base.class_eval { extend Slug }
+ActiveRecord::Base.send!(:extend, Slug)

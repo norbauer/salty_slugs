@@ -34,7 +34,7 @@ module Slug
       end
     end
     
-    private 
+  private 
     
     def sluggify(text)
       # hugs and kisses to Rick Olson's permalink_fu
