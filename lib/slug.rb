@@ -1,4 +1,5 @@
 module Slug
+  
   def has_slug(options = {})      
     
     unless included_modules.include? InstanceMethods 
@@ -9,18 +10,23 @@ module Slug
     slug_column = options[:slug_column] || 'slug'
     source_column = options[:source_column] || 'title'
     raise_exceptions = options[:raise_exceptions] == false ? false : true
+    append_id = options[:append_id] == false ? false : true
     
     write_inheritable_attribute :slug_column, slug_column  
     write_inheritable_attribute :slugged_find_should_raise_exceptions, raise_exceptions
+    write_inheritable_attribute :append_id, append_id  
 
     class_inheritable_reader :slug_column
     class_inheritable_reader :slugged_find_should_raise_exceptions
+    class_inheritable_reader :append_id
     
     before_validation { |record| record[slug_column] = record[slug_column].blank? ? sluggify(record[source_column]) : sluggify(record[slug_column]) }
     validates_uniqueness_of slug_column
+    
   end
   
   module ClassMethods
+    
     def slugged_find(slug, options = {})
       result = with_scope(:find => { :conditions => { slug_column => slug } }) do
         find(:first, options)
@@ -29,7 +35,7 @@ module Slug
       result
     end
     
-  private 
+    private 
     
     def sluggify(text)
       # hugs and kisses to Rick Olson's permalink_fu
@@ -40,11 +46,15 @@ module Slug
       s.gsub!(/\ +/, '-')
       return s
     end
+    
   end
   
   module InstanceMethods
+    
     def to_param
-      self[slug_column]
+      append_id ? "#{self[:id]}-#{self[slug_column]}" : self[slug_column]
     end
+    
   end
+  
 end
