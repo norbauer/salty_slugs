@@ -14,7 +14,7 @@ module Slug
     
     write_inheritable_attribute :slug_column, slug_column  
     write_inheritable_attribute :slugged_find_should_raise_exceptions, raise_exceptions
-    write_inheritable_attribute :slug_should_prepend_id, prepend_id  
+    write_inheritable_attribute :slug_prepend_id, prepend_id  
 
     class_inheritable_reader :slug_column
     class_inheritable_reader :slugged_find_should_raise_exceptions
