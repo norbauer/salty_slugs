@@ -28,11 +28,19 @@ module Slug
   module ClassMethods
     
     def slugged_find(slug, options = {})
-      result = with_scope(:find => { :conditions => { slug_column => slug } }) do
-        find(:first, options)
+      if slug_prepend_id && slug.to_i != 0
+        if slugged_find_should_raise_exceptions
+          return find(slug.to_i, options)
+        else
+          begin return find(slug.to_i, options) rescue ::ActiveRecord::RecordNotFound ; nil end
+        end
+      else
+        result = with_scope(:find => { :conditions => { slug_column => slug } }) do
+          find(:first, options)
+        end
+        raise ::ActiveRecord::RecordNotFound if result.nil? && slugged_find_should_raise_exceptions
+        result
       end
-      raise ::ActiveRecord::RecordNotFound if result.nil? && slugged_find_should_raise_exceptions
-      result
     end
     
     private 
