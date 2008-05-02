@@ -30,9 +30,9 @@ module Slug
     def slugged_find(slug, options = {})
       if slug_prepend_id && slug.to_i != 0
         if slugged_find_should_raise_exceptions
-          return find(slug.to_i, options)
+          find(slug.to_i, options)
         else
-          begin return find(slug.to_i, options) rescue ::ActiveRecord::RecordNotFound ; nil end
+          begin find(slug.to_i, options) rescue ::ActiveRecord::RecordNotFound ; nil end
         end
       else
         result = with_scope(:find => { :conditions => { slug_column => slug } }) do
