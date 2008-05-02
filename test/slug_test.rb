@@ -4,11 +4,6 @@ class Post < ActiveRecord::Base
   has_slug
 end
 
-class PostNoExceptions < ActiveRecord::Base
-  set_table_name 'posts'
-  has_slug :raise_exceptions => false
-end
-
 class PostPublicSluggify < ActiveRecord::Base
   has_slug
   class << self; public :sluggify; end
@@ -27,10 +22,6 @@ class SlugTest < Test::Unit::TestCase
     assert_raise(ActiveRecord::RecordNotFound) { Post.slugged_find("this is not an existing slug") }
   end
 
-  def test_failing_slugged_find_without_exceptions
-    assert_equal nil, PostNoExceptions.slugged_find("this is not an existing slug")
-  end
-  
   def test_slug_column
     assert_equal "slug", Post.class_eval { slug_column }
   end
