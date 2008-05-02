@@ -41,7 +41,7 @@ module Slug
   
   module InstanceMethods
     def to_param
-      self[self.class.slug_column]
+      self[slug_column]
     end
   end
 end
