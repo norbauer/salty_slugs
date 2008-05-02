@@ -1,7 +1,10 @@
 module Slug
   def has_slug(options = {})      
-    extend ClassMethods
-    include InstanceMethods
+    
+    unless included_modules.include? InstanceMethods 
+      extend ClassMethods
+      include InstanceMethods
+    end
     
     slug_column = options[:slug_column] || 'slug'
     source_column = options[:source_column] || 'title'
