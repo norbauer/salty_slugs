@@ -1,19 +1,32 @@
-Slug
-====
+=== SaltySlugs
 
-Slugs columns, adds a slug finder and sets to_param for slug models. Requires a 'slug' field in the database, where the slug itself is stored.
+ Abstraction of word-based slugs for URLs, w/ or w/o leading numeric IDs.
 
+=== Instructions
 
-Example
-=======
-
+ # Defaults to 'title' as the source column and 'slug' as the slug column.  Prepends the model ID
  class Post < ActiveRecord::Base
-   has_slug # defaults to title
+   has_slug
+ end
+ 
+ @post.to_param
+ => '23-do-not-mix-slugs-and-salt'
+
+ # You can also overwrite the defaults
+ class Product < ActiveRecord::Base
+   has_slug :source_column => :name, :slug_column => :permalink, :prepend_id => false
  end
 
- class Document < ActiveRecord::Base
-   has_slug :filename
+ @product.to_param
+ => 'salt-and-pepper-shaker'
+ 
+ # In your controllers
+ class PostsController < ApplicationController
+ 
+  def show
+    @post = Post.slugged_find(params[:id])
+  end
+ 
  end
-
 
 Copyright (c) 2008 Norbauer Inc, released under the MIT license
