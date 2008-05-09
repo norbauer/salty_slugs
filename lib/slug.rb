@@ -51,7 +51,6 @@ module Slug
   module InstanceMethods
     
     def to_param
-      puts "prepend_id is #{slug_prepend_id}"
       slug_prepend_id ? "#{self.id}-#{self[slug_column]}" : self[slug_column]
     end
     
