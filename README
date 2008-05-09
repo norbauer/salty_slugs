@@ -9,6 +9,7 @@
    has_slug
  end
  
+ @post = Post.create(:title => "Do Not Mix Slugs and Salt!")
  @post.to_param
  => '23-do-not-mix-slugs-and-salt'
 
@@ -16,11 +17,12 @@
  class Product < ActiveRecord::Base
    has_slug :source_column => :name, :slug_column => :permalink, :prepend_id => false
  end
-
+ 
+ @product = Product.create(:name => "Salt Shaker")
  @product.to_param
  => 'salt-and-pepper-shaker'
  
- # In your controllers, works with or without prepending ID's
+ # Use the slugged_find class method in your controllers, works with or without prepending ID's
  class PostsController < ApplicationController
  
   def show
