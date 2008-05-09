@@ -20,7 +20,7 @@
  @product.to_param
  => 'salt-and-pepper-shaker'
  
- # In your controllers
+ # In your controllers, works with or without prepending ID's
  class PostsController < ApplicationController
  
   def show
