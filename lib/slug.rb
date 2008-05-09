@@ -9,7 +9,7 @@ module Slug
     
     slug_column = options[:slug_column] || 'slug'
     source_column = options[:source_column] || 'title'
-    prepend_id = options[:prepend_id] == false ? false : true
+    prepend_id = options[:prepend_id].nil? ? true : options[:prepend_id]
     
     write_inheritable_attribute :slug_column, slug_column  
     write_inheritable_attribute :slug_prepend_id, prepend_id  
@@ -51,6 +51,7 @@ module Slug
   module InstanceMethods
     
     def to_param
+      puts "prepend_id is #{slug_prepend_id}"
       slug_prepend_id ? "#{self.id}-#{self[slug_column]}" : self[slug_column]
     end
     

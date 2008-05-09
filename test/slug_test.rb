@@ -4,18 +4,31 @@ class Post < ActiveRecord::Base
   has_slug
 end
 
+class Product < ActiveRecord::Base
+  has_slug :source_column => :name, :slug_column => :permalink, :prepend_id => false
+end
+
+
 class PostPublicSluggify < ActiveRecord::Base
   has_slug
   class << self; public :sluggify; end
 end
 
 class SlugTest < Test::Unit::TestCase
+  
   def setup
     @post = Post.create(:title => "Can has cheesburger?")
+    @product = Product.create(:name => "Salt Shaker")
+  end
+  
+  def teardown
+    Post.delete_all
+    Product.delete_all
   end
 
   def test_slugged_find
-    assert Post.slugged_find("can-has-cheesburger")
+    assert Post.slugged_find("#{@post.id}-can-has-cheesburger")
+    assert Product.slugged_find("salt-shaker")
   end
   
   def test_failing_slugged_find
@@ -23,15 +36,23 @@ class SlugTest < Test::Unit::TestCase
   end
 
   def test_slug_column
-    assert_equal "slug", Post.class_eval { slug_column }
+    assert_equal "slug", Post.slug_column.to_s
+    assert_equal "permalink", Product.slug_column.to_s
+  end
+  
+  def test_source_column
+    assert_equal PostPublicSluggify.sluggify(@post.title), @post.slug
+    assert_equal PostPublicSluggify.sluggify(@product.name), @product.permalink
   end
   
   def test_uniqueness_of_slug
     assert_raise(ActiveRecord::RecordInvalid) { Post.create!(:title => "can has CHEESBURGER??") }
+    assert_raise(ActiveRecord::RecordInvalid) { Product.create!(:name => "!!!~~Salt SHAKER~~~!!!!") }
   end
   
   def test_to_param
     assert_equal @post.to_param, "#{@post.id}-#{@post[Post.slug_column]}"
+    assert_equal @product.to_param, "#{@product[Product.slug_column]}"
   end
   
   def test_sluggify
