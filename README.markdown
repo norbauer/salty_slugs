@@ -1,10 +1,18 @@
 ## SaltySlugs
 
  Abstraction of word-based slugs for URLs, w/ or w/o leading numeric IDs.
+ 
+## Installation
+
+* Using Rails 2.1+
+
+<pre>
+   ./script/plugin install git://github.com/norbauer/salty_slugs.git
+</pre>
 
 ## Instructions
 
-* Defaults to 'title' as the source column and 'slug' as the slug column.  Prepends the model ID
+* SaltySlugs defaults to `title` as the `source_column` and `slug` as the `slug_column`, and prepends the model ID. Upon creating/updating a record, the plugin will sluggify the `source_column` when `slug_column` is empty, otherwise it will sluggify the `slug_column`.
 
 <pre> 
 class Post < ActiveRecord::Base
