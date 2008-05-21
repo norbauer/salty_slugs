@@ -36,13 +36,19 @@ end
 => 'salt-and-pepper-shaker'
 </pre>
  
-* Use the slugged_find class method in your controllers, smart enough to modify the search conditions if prepending ID is found or not.
+* Use the `slugged_find` class method in your controllers, smart enough to modify the search conditions if prepending ID is found or not. `slugged_find` is capable of accepting standard `ActiveRecord::Base#find` options as a second parameter. If no records are found, `ActiveRecord::RecordNotFound` is raised to match behavior of `ActiveRecord::Base#find`.
 
 <pre>
 class PostsController < ApplicationController
 
    def show
-      @post = Post.slugged_find(params[:id])
+     @post = Post.slugged_find(params[:id])
+     # or optionally with an eager-load
+     @post_with_author = Post.slugged_find(params[:id], :include => :author)
+   # catch exceptions if post is not found
+   rescue ActiveRecord::RecordNotFound
+     flash[:error] = "Post not found"
+     redirect_to :action => :index
    end
    
 end
