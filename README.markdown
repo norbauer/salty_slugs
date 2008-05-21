@@ -7,7 +7,7 @@
 * Using Rails 2.1+
 
 <pre>
-   ./script/plugin install git://github.com/norbauer/salty_slugs.git
+./script/plugin install git://github.com/norbauer/salty_slugs.git
 </pre>
 
 ## Instructions
@@ -50,4 +50,4 @@ end
 
 ---
 Copyright (c) 2008 Norbauer Inc, released under the MIT license
-Written by Jonathan Dance and Jose Fernandez
+<br/>Written by Jonathan Dance and Jose Fernandez
