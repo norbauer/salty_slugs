@@ -18,7 +18,7 @@ module Slug
     class_inheritable_reader :slug_prepend_id
     
     before_validation { |record| record[slug_column] = record[slug_column].blank? ? sluggify(record[source_column]) : sluggify(record[slug_column]) }
-    validates_uniqueness_of slug_column
+    validates_uniqueness_of slug_column, :if => :slug_prepend_id
     
   end
   

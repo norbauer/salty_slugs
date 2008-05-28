@@ -47,7 +47,7 @@ class SlugTest < Test::Unit::TestCase
   
   def test_uniqueness_of_slug
     assert_raise(ActiveRecord::RecordInvalid) { Post.create!(:title => "can has CHEESBURGER??") }
-    assert_raise(ActiveRecord::RecordInvalid) { Product.create!(:name => "!!!~~Salt SHAKER~~~!!!!") }
+    assert_nothing_raised { Product.create!(:name => "!!!~~Salt SHAKER~~~!!!!") }
   end
   
   def test_to_param
