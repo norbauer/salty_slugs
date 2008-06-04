@@ -1,0 +1,96 @@
+---
+ README.markdown   |    2 ++
+ lib/slug.rb       |   13 +++++++------
+ test/slug_test.rb |   10 +++++++++-
+ 3 files changed, 18 insertions(+), 7 deletions(-)
+
+diff --git a/README.markdown b/README.markdown
+index 5874f4a2210d8e3aefe0f7929450b1afeb7e9df6..804013d32b39e6f6dc32859c230c9763aa905cc6 100644
+--- a/README.markdown
++++ b/README.markdown
+@@ -54,6 +54,8 @@ class PostsController < ApplicationController
+ end
+ </pre>
+ 
++* If the `sync_slug` option is set to true (defaults to false), the `source_column` will _always_ be sluggified upon updating the record.
++
+ ---
+ Copyright (c) 2008 Norbauer Inc, released under the MIT license
+ <br/>Written by Jonathan Dance and Jose Fernandez
+diff --git a/lib/slug.rb b/lib/slug.rb
+index 6cb2ad0760c215b78b1133c86c259175c8ffd86a..d9d1c601ff881e8033acb69d49e98a9fd3f09a05 100644
+--- a/lib/slug.rb
++++ b/lib/slug.rb
+@@ -1,15 +1,16 @@
+ module Slug
+   
+-  def has_slug(options = {})      
+-    
++  def has_slug(*args)
+     unless included_modules.include? InstanceMethods 
+       extend ClassMethods
+       include InstanceMethods
+     end
+     
++    options = args.extract_options!
+     slug_column = options[:slug_column] || 'slug'
+     source_column = options[:source_column] || 'title'
+     prepend_id = options[:prepend_id].nil? ? true : options[:prepend_id]
++    sync_slug = options[:sync_slug].nil? ? false : options[:sync_slug]
+     
+     write_inheritable_attribute :slug_column, slug_column  
+     write_inheritable_attribute :slug_prepend_id, prepend_id  
+@@ -17,9 +18,9 @@ module Slug
+     class_inheritable_reader :slug_column
+     class_inheritable_reader :slug_prepend_id
+     
+-    before_validation { |record| record[slug_column] = record[slug_column].blank? ? sluggify(record[source_column]) : sluggify(record[slug_column]) }
+-    validates_uniqueness_of slug_column
+-    
++    before_validation { |record| record[slug_column] = (sync_slug || record[slug_column].blank?) ? sluggify(record[source_column]) : sluggify(record[slug_column]) }
++        
++    validates_uniqueness_of slug_column  
+   end
+   
+   module ClassMethods
+@@ -34,7 +35,7 @@ module Slug
+       end
+     end
+     
+-  private 
++  private
+     
+     def sluggify(text)
+       # hugs and kisses to Rick Olson's permalink_fu
+diff --git a/test/slug_test.rb b/test/slug_test.rb
+index 9c1c4cc0b167f18bcfc2e94e6d55760bcc4ec640..1ef2190f65a0d18c9e572ca91b21b923f3ebd302 100644
+--- a/test/slug_test.rb
++++ b/test/slug_test.rb
+@@ -5,7 +5,7 @@ class Post < ActiveRecord::Base
+ end
+ 
+ class Product < ActiveRecord::Base
+-  has_slug :source_column => :name, :slug_column => :permalink, :prepend_id => false
++  has_slug :source_column => :name, :slug_column => :permalink, :prepend_id => false, :sync_slug => true
+ end
+ 
+ 
+@@ -50,6 +50,14 @@ class SlugTest < Test::Unit::TestCase
+     assert_raise(ActiveRecord::RecordInvalid) { Product.create!(:name => "!!!~~Salt SHAKER~~~!!!!") }
+   end
+   
++  def test_sync_slug
++    @post.title, @product.name = 'foo', 'bar'
++    @post.save
++    @product.save
++    assert @post.title != @post.slug
++    assert @product.name == @product.permalink
++  end
++  
+   def test_to_param
+     assert_equal @post.to_param, "#{@post.id}-#{@post[Post.slug_column]}"
+     assert_equal @product.to_param, "#{@product[Product.slug_column]}"
+-- 
+1.5.5.1
+
+

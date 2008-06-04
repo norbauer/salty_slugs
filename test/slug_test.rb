@@ -5,7 +5,7 @@ class Post < ActiveRecord::Base
 end
 
 class Product < ActiveRecord::Base
-  has_slug :source_column => :name, :slug_column => :permalink, :prepend_id => false
+  has_slug :source_column => :name, :slug_column => :permalink, :prepend_id => false, :sync_slug => true
 end
 
 
@@ -48,6 +48,14 @@ class SlugTest < Test::Unit::TestCase
   def test_uniqueness_of_slug
     assert_nothing_raised { Post.create!(:title => "can has CHEESBURGER??") }
     assert_raise(ActiveRecord::RecordInvalid) { Product.create!(:name => "!!!~~Salt SHAKER~~~!!!!") }
+  end
+  
+  def test_sync_slug
+    @post.title, @product.name = 'foo', 'bar'
+    @post.save
+    @product.save
+    assert @post.title != @post.slug
+    assert @product.name == @product.permalink
   end
   
   def test_to_param

@@ -1,15 +1,16 @@
 module Slug
   
-  def has_slug(options = {})      
-    
+  def has_slug(*args)
     unless included_modules.include? InstanceMethods 
       extend ClassMethods
       include InstanceMethods
     end
     
+    options = args.extract_options!
     slug_column = options[:slug_column] || 'slug'
     source_column = options[:source_column] || 'title'
     prepend_id = options[:prepend_id].nil? ? true : options[:prepend_id]
+    sync_slug = options[:sync_slug].nil? ? false : options[:sync_slug]
     
     write_inheritable_attribute :slug_column, slug_column  
     write_inheritable_attribute :slug_prepend_id, prepend_id  
@@ -17,9 +18,9 @@ module Slug
     class_inheritable_reader :slug_column
     class_inheritable_reader :slug_prepend_id
     
-    before_validation { |record| record[slug_column] = record[slug_column].blank? ? sluggify(record[source_column]) : sluggify(record[slug_column]) }
     validates_uniqueness_of slug_column, :unless => :slug_prepend_id
     
+    before_validation { |record| record[slug_column] = (sync_slug || record[slug_column].blank?) ? sluggify(record[source_column]) : sluggify(record[slug_column]) }  
   end
   
   module ClassMethods
@@ -34,7 +35,7 @@ module Slug
       end
     end
     
-  private 
+  private
     
     def sluggify(text)
       # hugs and kisses to Rick Olson's permalink_fu

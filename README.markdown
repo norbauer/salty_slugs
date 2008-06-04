@@ -54,6 +54,8 @@ class PostsController < ApplicationController
 end
 </pre>
 
+* If the `sync_slug` option is set to true (defaults to false), the `source_column` will _always_ be sluggified upon updating the record.
+
 ---
 Copyright (c) 2008 Norbauer Inc, released under the MIT license
 <br/>Written by Jonathan Dance and Jose Fernandez
