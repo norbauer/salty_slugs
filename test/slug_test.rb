@@ -53,8 +53,11 @@ class SlugTest < Test::Unit::TestCase
   def test_sync_slug
     @post.title, @product.name = 'foo', 'bar'
     @post.save
-    @product.save
     assert @post.title != @post.slug
+    @post.slug = 'quack'
+    @post.save
+    assert @post.title != @post.slug
+    @product.save
     assert @product.name == @product.permalink
   end
   
