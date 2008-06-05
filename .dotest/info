@@ -1,5 +1,0 @@
-Author: Jose Fernandez
-Email: jose@umn.edu
-Subject: Added slug synching option, set to false by default.  If set to true, will always slugify the source_column, regardless of the current contents of the slug field
-Date: Tue, 3 Jun 2008 20:43:06 -0500
-
