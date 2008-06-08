@@ -12,7 +12,7 @@
 
 ## Instructions
 
-* SaltySlugs defaults to `title` as the `source_column` and `slug` as the `slug_column`, and prepends the model ID. Upon creating/updating a record, the plugin will sluggify the `source_column` when `slug_column` is empty, otherwise it will sluggify the `slug_column`.
+* SaltySlugs defaults to `title` as the `source_column`, `slug` as the `slug_column`, and prepends the model ID. Upon creating/updating a record, the plugin will sluggify the `source_column` when the `slug_column` is empty, otherwise it will sluggify the `slug_column` _unless_ the `slug_sync` option is set to true (defaults to false).
 
 <pre> 
 class Post < ActiveRecord::Base
@@ -54,7 +54,7 @@ class PostsController < ApplicationController
 end
 </pre>
 
-* If the `sync_slug` option is set to true (defaults to false), the `source_column` will _always_ be sluggified upon updating the record.
+* If the `sync_slug` option is set to true, the `source_column` will _always_ be sluggified upon updating the record.  This means that the slug will not be able to be manually edited, but will always be synchronized to the `source_column`. 
 
 ---
 Copyright (c) 2008 Norbauer Inc, released under the MIT license
