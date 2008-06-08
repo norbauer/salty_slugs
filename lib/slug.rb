@@ -1,5 +1,4 @@
 module Slug
-  
   def has_slug(*args)
     unless included_modules.include? InstanceMethods 
       extend ClassMethods
@@ -24,7 +23,6 @@ module Slug
   end
   
   module ClassMethods
-    
     def slugged_find(slug, options = {})
       if slug_prepend_id && slug.to_i != 0
         find(slug.to_i, options)
@@ -46,15 +44,11 @@ module Slug
       s.gsub!(/\ +/, '-')
       return s
     end
-    
   end
   
   module InstanceMethods
-    
     def to_param
       slug_prepend_id ? "#{self.id}-#{self[slug_column]}" : self[slug_column]
     end
-    
-  end
-  
+  end 
 end
