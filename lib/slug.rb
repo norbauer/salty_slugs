@@ -37,6 +37,7 @@ module Slug
     
     def sluggify(text)
       # hugs and kisses to Rick Olson's permalink_fu
+      return nil if text.blank?
       s = Iconv.iconv('ascii//translit', 'utf-8', text).to_s
       s.gsub!(/\W+/, ' ')
       s.strip!
@@ -48,6 +49,7 @@ module Slug
   
   module InstanceMethods
     def to_param
+      return self.id if slug_prepend_id && self[slug_column].blank?
       slug_prepend_id ? "#{self.id}-#{self[slug_column]}" : self[slug_column]
     end
   end 
