@@ -37,8 +37,18 @@ module Slug
     
     def sluggify(text)
       return nil if text.blank?
-      str = Unicode.normalize_KD(text).gsub(/[^\x00-\x7F]/n,'')
-      str = str.gsub(/\W+/, '-').gsub(/^-+/,'').gsub(/-+$/,'').downcase
+      if defined?(Unicode)
+        str = Unicode.normalize_KD(text).gsub(/[^\x00-\x7F]/n,'')
+        str = str.gsub(/\W+/, '-').gsub(/^-+/,'').gsub(/-+$/,'').downcase
+        return str
+      else
+        str = Iconv.iconv('ascii//translit', 'utf-8', text).to_s
+        str.gsub!(/\W+/, ' ')
+        str.strip!
+        str.downcase!
+        str.gsub!(/\ +/, '-')
+        return str
+      end
     end
   end
   
