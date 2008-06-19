@@ -36,14 +36,9 @@ module Slug
   private
     
     def sluggify(text)
-      # hugs and kisses to Rick Olson's permalink_fu
       return nil if text.blank?
-      s = Iconv.iconv('ascii//translit', 'utf-8', text).to_s
-      s.gsub!(/\W+/, ' ')
-      s.strip!
-      s.downcase!
-      s.gsub!(/\ +/, '-')
-      return s
+      str = Unicode.normalize_KD(text).gsub(/[^\x00-\x7F]/n,'')
+      str = str.gsub(/\W+/, '-').gsub(/^-+/,'').gsub(/-+$/,'').downcase
     end
   end
   
