@@ -19,7 +19,7 @@ module Slug
     
     validates_uniqueness_of slug_column, :unless => :slug_prepend_id
     
-    before_validation { |record| record[slug_column] = (sync_slug || record[slug_column].blank?) ? sluggify(record[source_column]) : sluggify(record[slug_column]) }  
+    before_validation { |record| record[slug_column] = (sync_slug || record[slug_column].blank?) ? sluggify(record.send(source_column)) : sluggify(record[slug_column]) }  
   end
   
   module ClassMethods
