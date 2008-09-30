@@ -56,23 +56,10 @@ end
 
 * If the `sync_slug` option is set to true, the `source_column` will _always_ be sluggified upon updating the record.  This means that the slug will not be able to be manually edited, but will always be synchronized to the `source_column`.
 
-* If the `scope` option is set to a column, models with different parents can have the same slug (useful with nested resources)
-
-<pre>
-class  < ActiveRecord::Base
-   has_slug
-end
-
-class Chapter < ActiveRecord::Base
-   has_slug :scope => :article_id
-end
-</pre>
-N.B.: don't miss the `_id`, scope use a column not a model
-
 ## TODO
 
 * Add a word/regexp blacklist, so that they are sliced out of a string when sluggified (for example to remove .com, .net, etc)
 
 ---
 Copyright (c) 2008 Norbauer Inc, released under the MIT license
-<br/>Written by Jonathan Dance, Jose Fernandez and Florent Monbillard
+<br/>Written by Jonathan Dance and Jose Fernandez
