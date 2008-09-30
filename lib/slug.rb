@@ -18,7 +18,7 @@ module Slug
     class_inheritable_reader :slug_column
     class_inheritable_reader :slug_prepend_id
     
-    validates_uniqueness_of slug_column, :scope => scope_column, :unless => :slug_prepend_id
+    validates_uniqueness_of slug_column, :scope => scope_column
     
     before_validation { |record| record[slug_column] = (sync_slug || record[slug_column].blank?) ? sluggify(record.send(source_column)) : sluggify(record[slug_column]) }  
   end
