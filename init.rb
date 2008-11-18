@@ -1,3 +1,4 @@
+require 'salty_slugs'
 begin
   require "unicode"
 rescue LoadError
