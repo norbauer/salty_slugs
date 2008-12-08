@@ -16,6 +16,7 @@ module Norbauer
         source_column = options[:source_column] || 'title'
         prepend_id = options[:prepend_id].nil? ? true : options[:prepend_id]
         sync_slug = options[:sync_slug].nil? ? false : options[:sync_slug]
+	scope_fields = options[:scope] || nil
     
         write_inheritable_attribute :slug_column, slug_column  
         write_inheritable_attribute :slug_prepend_id, prepend_id  
@@ -23,7 +24,9 @@ module Norbauer
         class_inheritable_reader :slug_column
         class_inheritable_reader :slug_prepend_id
     
-        validates_uniqueness_of slug_column, :unless => :slug_prepend_id
+        unless slug_prepend_id
+	  scope_fields ? (validates_uniqueness_of slug_column, :scope => scope_fields) : (validates_uniqueness_of slug_column)
+	end
     
         before_validation { |record| record[slug_column] = (sync_slug || record[slug_column].blank?) ? sluggify(record.send(source_column)) : sluggify(record[slug_column]) }  
       end
