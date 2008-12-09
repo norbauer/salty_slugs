@@ -8,6 +8,9 @@ class Product < ActiveRecord::Base
   has_slug :source_column => :name, :slug_column => :permalink, :prepend_id => false, :sync_slug => true
 end
 
+class Article < ActiveRecord::Base
+  has_slug :slug_column => :permalink, :prepend_id => false, :sync_slug => true, :scope => :author
+end
 
 class PostPublicSluggify < ActiveRecord::Base
   has_slug
@@ -19,6 +22,7 @@ class SlugTest < Test::Unit::TestCase
   def setup
     @post = Post.create(:title => "Can has cheesburger?")
     @product = Product.create(:name => "Salt Shaker")
+    @article = Article.create(:title => "Lock On Black Shark", :author => "Siddhaarth Verma", :body => "It's gonna be the Mecca for simulation fans!")
   end
   
   def teardown
@@ -48,6 +52,12 @@ class SlugTest < Test::Unit::TestCase
   def test_uniqueness_of_slug
     assert_nothing_raised { Post.create!(:title => "can has CHEESBURGER??") }
     assert_raise(ActiveRecord::RecordInvalid) { Product.create!(:name => "!!!~~Salt SHAKER~~~!!!!") }
+  end
+  
+  def test_uniqueness_of_slug_with_scope
+    assert_nothing_raised { Article.create!(:title => "Left 4 Dead", :author => "Siddhaarth Verma", :body => "Valve has done it again! This is a zombie fragging masterpiece.") }
+    assert_nothing_raised { Article.create!(:title => "Left 4 Dead", :author => "Sid", :body => "The co-op multiplayer game of the year!") }
+    assert_raise(ActiveRecord::RecordInvalid) { Article.create!(:title => "Lock On Black Shark", :author => "Siddhaarth Verma", :body => "The most authentic gunship simuator ever.") }
   end
   
   def test_sync_slug
