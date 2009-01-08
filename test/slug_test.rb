@@ -74,6 +74,8 @@ class SlugTest < Test::Unit::TestCase
   def test_to_param
     assert_equal @post.to_param, "#{@post.id}-#{@post[Post.slug_column]}"
     assert_equal @product.to_param, "#{@product[Product.slug_column]}"
+    post_with_blank_slug = Post.create
+    assert_equal post_with_blank_slug.to_param, post_with_blank_slug.id.to_s
   end
   
   def test_sluggify
